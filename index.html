@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PDF to ZIP Converter - Fast and Easy!</title>
+
+    <meta name="description" content="Easily convert your PDF files to ZIP archives. Our online tool is fast, free, and easy to use. Secure PDF to ZIP conversion.">
+
+    <meta name="keywords" content="pdf to zip, convert pdf to zip, pdf to zip online, free pdf converter, compress pdf to zip, pdf to archive">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- JSZip Library (CDN) -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+
+
+        :root {
+
+            --primary-color: #e74c3c; /* Red */
+
+            --secondary-color: #c0392b; /* Darker Red */
+
+            --background-color: #1a1a1a; /* Very Dark Grey / Near Black */
+
+            --text-color: #f0f0f0; /* Light Grey / Off-White */
+
+            --card-bg-color: #2c2c2c; /* Dark Grey for cards */
+
+            --border-color: #444;
+
+            --success-color: #2ecc71;
+
+            --error-color: #e74c3c; 
+
+            --font-main: 'Roboto', sans-serif;
+
+        }
+
+
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        html {
+
+            scroll-behavior: smooth;
+
+        }
+
+
+
+        body {
+
+            font-family: var(--font-main);
+
+            background-color: var(--background-color);
+
+            color: var(--text-color);
+
+            line-height: 1.6;
+
+            direction: ltr; 
+
+        }
+
+
+
+        .container {
+
+            width: 90%;
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 0 20px;
+
+        }
+
+
+
+        h1, h2, h3, h4 {
+
+            margin-bottom: 1rem;
+
+            font-weight: 500;
+
+            line-height: 1.3;
+
+        }
+
+        h1 { font-size: 2.8rem; }
+
+        h2 { font-size: 2.2rem; }
+
+        h3 { font-size: 1.5rem; }
+
+
+
+        p {
+
+            margin-bottom: 1rem;
+
+        }
+
+
+
+        a {
+
+            color: var(--primary-color);
+
+            text-decoration: none;
+
+            transition: color 0.3s ease;
+
+        }
+
+
+
+        a:hover {
+
+            color: var(--secondary-color);
+
+        }
+
+
+
+        ul {
+
+            list-style: none;
+
+        }
+
+
+
+        .highlight {
+
+            color: var(--primary-color);
+
+        }
+
+
+
+        /* Header */
+
+        header {
+
+            background-color: #111;
+
+            padding: 1rem 0;
+
+            position: fixed;
+
+            width: 100%;
+
+            top: 0;
+
+            z-index: 1000;
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+
+        }
+
+
+
+        header .container {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+
+        .logo {
+
+            font-size: 1.8rem;
+
+            font-weight: 700;
+
+            color: var(--text-color);
+
+        }
+
+
+
+        .logo .logo-icon {
+
+            color: var(--primary-color);
+
+            margin-right: 8px;
+
+            animation: pulseIcon 2s infinite;
+
+        }
+
+
+
+        .logo span {
+
+            color: var(--primary-color);
+
+        }
+
+
+
+        header nav ul {
+
+            display: flex;
+
+        }
+
+
+
+        header nav ul li {
+
+            margin-left: 25px;
+
+        }
+
+
+
+        header nav ul li a {
+
+            color: var(--text-color);
+
+            font-weight: 500;
+
+            padding: 5px 0;
+
+            position: relative;
+
+        }
+
+
+
+        header nav ul li a::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 0;
+
+            width: 0;
+
+            height: 2px;
+
+            background-color: var(--primary-color);
+
+            transition: width 0.3s ease;
+
+        }
+
+
+
+        header nav ul li a:hover::after,
+
+        header nav ul li a.active::after {
+
+            width: 100%;
+
+        }
+
+
+
+        .menu-toggle {
+
+            display: none;
+
+            background: none;
+
+            border: none;
+
+            color: var(--text-color);
+
+            font-size: 1.5rem;
+
+            cursor: pointer;
+
+        }
+
+
+
+        /* Hero Section */
+
+        #hero {
+
+            padding-top: 140px; 
+
+            padding-bottom: 80px;
+
+            text-align: center;
+
+            background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.95)), url('https://via.placeholder.com/1920x1080/222222/E74C3C?text=Tech+Background') no-repeat center center/cover;
+
+            position: relative;
+
+            overflow: hidden; 
+
+        }
+
+
+
+        #hero h1 {
+
+            font-size: 3.5rem;
+
+            margin-bottom: 0.5rem;
+
+            animation: fadeInDown 1s ease-out;
+
+        }
+
+
+
+        #hero .subtitle {
+
+            font-size: 1.3rem;
+
+            margin-bottom: 2rem;
+
+            color: #ccc;
+
+            animation: fadeInUp 1s ease-out 0.3s;
+
+            animation-fill-mode: backwards; 
+
+        }
+
+
+
+        .cta-button {
+
+            display: inline-block;
+
+            background-color: var(--primary-color);
+
+            color: #fff;
+
+            padding: 12px 30px;
+
+            font-size: 1.1rem;
+
+            border-radius: 5px;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+
+            transition: background-color 0.3s ease, transform 0.3s ease;
+
+            animation: zoomIn 1s ease-out 0.6s;
+
+            animation-fill-mode: backwards;
+
+        }
+
+
+
+        .cta-button:hover {
+
+            background-color: var(--secondary-color);
+
+            transform: translateY(-3px);
+
+            color: #fff;
+
+        }
+
+        .cta-button i {
+
+            margin-left: 8px;
+
+        }
+
+
+
+        .hero-bg-animation .shape {
+
+            position: absolute;
+
+            background-color: rgba(231, 76, 60, 0.2); 
+
+            border-radius: 50%;
+
+            opacity: 0;
+
+        }
+
+        .shape1 { width: 150px; height: 150px; bottom: 10%; left: 15%; animation: float 8s ease-in-out infinite; }
+
+        .shape2 { width: 100px; height: 100px; top: 20%; right: 10%; animation: float 10s ease-in-out infinite 1s; }
+
+        .shape3 { width: 80px; height: 80px; bottom: 30%; right: 25%; animation: float 6s ease-in-out infinite 0.5s; }
+
+
+
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+
+            50% { transform: translateY(-30px) scale(1.1); opacity: 0.6; }
+
+        }
+
+
+
+        /* Converter Tool Section */
+
+        #converter-tool {
+
+            padding: 60px 0;
+
+            background-color: var(--card-bg-color); 
+
+        }
+
+
+
+        #converter-tool h2 {
+
+            text-align: center;
+
+            margin-bottom: 2.5rem;
+
+        }
+
+        #converter-tool h2 i {
+
+            margin-right: 10px;
+
+            color: var(--primary-color);
+
+        }
+
+
+
+        .tool-wrapper {
+
+            background-color: #333;
+
+            padding: 30px 40px;
+
+            border-radius: 10px;
+
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+
+            max-width: 600px;
+
+            margin: auto;
+
+        }
+
+
+
+        .upload-area {
+
+            border: 3px dashed var(--primary-color);
+
+            border-radius: 8px;
+
+            padding: 40px 20px;
+
+            text-align: center;
+
+            margin-bottom: 20px;
+
+            cursor: pointer;
+
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+
+        }
+
+        
+
+        .upload-area.highlight-drag { 
+
+            background-color: #4a4a4a;
+
+            border-color: var(--secondary-color);
+
+        }
+
+
+
+        .upload-area:hover {
+
+            background-color: #3f3f3f;
+
+        }
+
+
+
+        .upload-area .upload-icon {
+
+            font-size: 3rem;
+
+            color: var(--primary-color);
+
+            margin-bottom: 15px;
+
+            display: block;
+
+        }
+
+
+
+        .upload-area p {
+
+            font-size: 1.1rem;
+
+            margin-bottom: 0.5rem;
+
+        }
+
+        .upload-area span {
+
+            display: block;
+
+            margin-bottom: 1rem;
+
+            color: #aaa;
+
+        }
+
+
+
+        .file-name-display {
+
+            margin-top: 10px;
+
+            font-style: italic;
+
+            color: #ccc;
+
+            min-height: 1.2em; 
+
+        }
+
+
+
+        .tool-button {
+
+            background-color: var(--primary-color);
+
+            color: #fff;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 1rem;
+
+            font-weight: 500;
+
+            transition: background-color 0.3s ease;
+
+            display: inline-block; 
+
+            margin: 5px;
+
+        }
+
+
+
+        .tool-button:hover:not(:disabled) {
+
+            background-color: var(--secondary-color);
+
+        }
+
+
+
+        .tool-button:disabled {
+
+            background-color: #555;
+
+            cursor: not-allowed;
+
+        }
+
+
+
+        .convert-button {
+
+            display: block;
+
+            width: 100%;
+
+            padding: 12px;
+
+            font-size: 1.1rem;
+
+            margin-top: 20px;
+
+        }
+
+
+
+        .convert-button .spin-icon {
+
+            margin-right: 8px;
+
+        }
+
+
+
+        .progress-section {
+
+            margin-top: 20px;
+
+            text-align: center;
+
+        }
+
+        .progress-section h4 {
+
+            margin-bottom: 0.5rem;
+
+            color: #ddd;
+
+        }
+
+
+
+        .progress-bar-container {
+
+            width: 100%;
+
+            background-color: #555;
+
+            border-radius: 25px;
+
+            padding: 3px;
+
+            margin-bottom: 0.5rem;
+
+        }
+
+
+
+        .progress-bar {
+
+            height: 25px;
+
+            width: 0%;
+
+            background-color: var(--primary-color);
+
+            border-radius: 25px;
+
+            text-align: center;
+
+            line-height: 25px;
+
+            color: white;
+
+            font-weight: bold;
+
+            transition: width 0.4s ease-in-out, background-color 0.4s ease;
+
+        }
+
+
+
+        .status-message {
+
+            font-size: 0.9rem;
+
+            color: var(--success-color);
+
+            min-height: 1.2em; 
+
+        }
+
+        .status-message.error {
+
+            color: var(--error-color);
+
+        }
+
+
+
+
+
+        .options-section {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background-color: #3a3a3a;
+
+            border-radius: 5px;
+
+        }
+
+        .options-section h4 {
+
+            margin-bottom: 10px;
+
+            color: var(--primary-color);
+
+        }
+
+        .options-section label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 0.95rem;
+
+            cursor: pointer;
+
+        }
+
+        .options-section input[type="checkbox"] {
+
+            margin-right: 8px;
+
+            accent-color: var(--primary-color);
+
+        }
+
+
+
+        /* Features Section */
+
+        #features { padding: 60px 0; }
+
+        #features h2 { text-align: center; margin-bottom: 3rem; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+
+        .feature-item { background-color: var(--card-bg-color); padding: 30px; text-align: center; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+
+        .feature-item:hover { transform: translateY(-10px); box-shadow: 0 15px 25px rgba(231, 76, 60, 0.2); }
+
+        .feature-item i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; display: inline-block; }
+
+        .feature-item h3 { margin-bottom: 0.5rem; color: #eee; }
+
+        .feature-item p { font-size: 0.95rem; color: #bbb; }
+
+
+
+        /* How It Works Section */
+
+        #how-it-works { padding: 60px 0; background-color: var(--card-bg-color); }
+
+        #how-it-works h2 { text-align: center; margin-bottom: 3rem; }
+
+        .steps-container { display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; }
+
+        .step { text-align: center; max-width: 280px; margin: 15px; }
+
+        .step-icon-wrapper { width: 100px; height: 100px; background-color: var(--primary-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 1.5rem auto; position: relative; font-size: 2.5rem; color: white; box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
+
+        .step-icon-wrapper span { position: absolute; top: -10px; right: -10px; background-color: #fff; color: var(--primary-color); border-radius: 50%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; font-size: 1rem; font-weight: bold; border: 2px solid var(--primary-color); }
+
+        .step h3 { color: #eee; }
+
+        .step p { color: #bbb; font-size: 0.9rem; }
+
+        .step-arrow { font-size: 2rem; color: var(--primary-color); align-self: center; margin: 0 20px; }
+
+        @media (max-width: 900px) { .step-arrow { display: none; } .steps-container { flex-direction: column; align-items: center;} }
+
+
+
+        /* SEO Info Section */
+
+        #seo-info { padding: 60px 0; }
+
+        #seo-info h2 { margin-bottom: 1.5rem; }
+
+        #seo-info p { margin-bottom: 1rem; color: #ccc; font-family: var(--font-main); font-size: 1.1rem; line-height: 1.8; }
+
+        #seo-info ul { list-style: none; padding-left: 0; margin-bottom: 1rem; }
+
+        #seo-info ul li { margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; font-family: var(--font-main); font-size: 1.05rem; }
+
+        #seo-info ul li i { color: var(--primary-color); position: absolute; left: 0; top: 5px; }
+
+
+
+        /* FAQ Section */
+
+        #faq { padding: 60px 0; background-color: var(--card-bg-color); }
+
+        #faq h2 { text-align: center; margin-bottom: 2.5rem; }
+
+        .faq-item { background-color: #333; padding: 20px; border-radius: 5px; margin-bottom: 15px; border-left: 5px solid var(--primary-color); }
+
+        .faq-item h4 { color: #eee; margin-bottom: 0.5rem; }
+
+        .faq-item h4 i { margin-right: 8px; color: var(--primary-color); }
+
+        .faq-item p { color: #bbb; font-size: 0.95rem; margin-bottom: 0; }
+
+        
+
+        /* Contact Section */
+
+        #contact { padding: 60px 0; text-align:center; }
+
+        #contact h2 { margin-bottom: 1.5rem; }
+
+        #contact p { color: #ccc; }
+
+        #contact a.email-link { color: var(--primary-color); font-size: 1.2rem; word-break: break-all; }
+
+
+
+
+
+        /* Footer */
+
+        footer { background-color: #111; padding: 40px 0 20px; color: #aaa; text-align: center; }
+
+        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; text-align: left; }
+
+        .footer-logo { flex: 1; min-width: 250px; }
+
+        .footer-logo .logo-icon { color: var(--primary-color); font-size: 1.5em; }
+
+        .footer-logo span { color: var(--primary-color); }
+
+        .footer-logo p { font-size: 0.9rem; margin-top: 10px; }
+
+        .footer-links, .footer-social { flex: 1; min-width: 180px; }
+
+        .footer-links h4, .footer-social h4 { color: var(--text-color); margin-bottom: 15px; font-size: 1.2rem; }
+
+        .footer-links ul li { margin-bottom: 10px; }
+
+        .footer-links ul li a { color: #aaa; transition: color 0.3s ease, padding-left 0.3s ease; }
+
+        .footer-links ul li a:hover { color: var(--primary-color); padding-left: 5px; }
+
+        .footer-social a { color: #aaa; font-size: 1.5rem; margin-right: 15px; transition: color 0.3s ease; }
+
+        .footer-social a:hover { color: var(--primary-color); }
+
+        .copyright { margin-top: 20px; font-size: 0.9rem; border-top: 1px solid var(--border-color); padding-top: 20px; text-align: center; }
+
+
+
+        /* Animations */
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .spinning { animation: spin 1.5s linear infinite; }
+
+        @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+
+
+        /* Responsive Design */
+
+        @media (max-width: 768px) {
+
+            header { padding: 0.8rem 0; }
+
+            header .container { flex-direction: row; justify-content: space-between; align-items: center; }
+
+            header nav { display: none; flex-direction: column; width: 100%; background-color: #1c1c1c; position: absolute; top: 100%; left: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.3); padding-bottom: 10px; }
+
+            header nav.active { display: flex; }
+
+            header nav ul { flex-direction: column; width: 100%; }
+
+            header nav ul li { margin: 0; text-align: center; border-bottom: 1px solid #333; }
+
+            header nav ul li:last-child { border-bottom: none; }
+
+            header nav ul li a { display: block; padding: 12px; width: 100%; }
+
+            header nav ul li a::after { left: 50%; transform: translateX(-50%); }
+
+            .menu-toggle { display: block; }
+
+            #hero { padding-top: 100px; padding-bottom: 60px; }
+
+            #hero h1 { font-size: 2.5rem; }
+
+            #hero .subtitle { font-size: 1.1rem; }
+
+            .features-grid { grid-template-columns: 1fr; }
+
+            .footer-content { flex-direction: column; align-items: center; text-align: center; }
+
+            .footer-logo, .footer-links, .footer-social { text-align: center; margin-bottom: 20px; }
+
+            .footer-social a { margin: 0 10px; }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .tool-wrapper { padding: 20px; }
+
+            #hero h1 { font-size: 2rem; }
+
+            #hero .subtitle { font-size: 1rem; }
+
+            .cta-button { padding: 10px 20px; font-size: 1rem; }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="container">
+
+            <div class="logo">
+
+                <i class="fas fa-file-zipper logo-icon"></i> PDF<span>to</span>ZIP
+
+            </div>
+
+            <nav>
+
+                <ul>
+
+                    <li><a href="#converter-tool">Tool</a></li>
+
+                    <li><a href="#features">Features</a></li>
+
+                    <li><a href="#how-it-works">How It Works?</a></li>
+
+                    <li><a href="#faq">FAQ</a></li>
+
+                    <li><a href="#contact">Contact</a></li>
+
+                </ul>
+
+            </nav>
+
+            <button class="menu-toggle" aria-label="Toggle menu">
+
+                <i class="fas fa-bars"></i>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <main>
+
+        <section id="hero">
+
+            <div class="container">
+
+                <h1>Super Fast <span class="highlight">PDF to ZIP</span> Converter</h1>
+
+                <p class="subtitle">Convert your PDF files to secure ZIP archives in seconds. Absolutely Free!</p>
+
+                <a href="#converter-tool" class="cta-button">Convert Now <i class="fas fa-angle-double-right"></i></a>
+
+            </div>
+
+            <div class="hero-bg-animation">
+
+                <div class="shape shape1"></div>
+
+                <div class="shape shape2"></div>
+
+                <div class="shape shape3"></div>
+
+            </div>
+
+        </section>
+
+
+
+
+
+        <section id="converter-tool">
+
+            <div class="container"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+                <h2><i class="fas fa-cogs"></i> PDF to ZIP Converter Tool</h2>
+
+                <div class="tool-wrapper">
+
+                    <div class="upload-area">
+
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+
+                        <p>Drag & Drop Your PDF File Here</p>
+
+                        <span>Or</span>
+
+                        <input type="file" id="pdfFile" accept=".pdf" style="display:none;">
+
+                        <button id="browseFileBtn" class="tool-button">Browse File</button>
+
+                        <p id="fileName" class="file-name-display"></p>
+
+                    </div>
+
+
+
+                    <div class="progress-section" id="uploadProgressSection" style="display:none;">
+
+                        <h4>Uploading...</h4>
+
+                        <div class="progress-bar-container">
+
+                            <div class="progress-bar" id="uploadProgressBar">0%</div>
+
+                        </div>
+
+                        <p id="uploadStatus" class="status-message"></p>
+
+                    </div>
+
+
+
+                    <div class="options-section" id="conversionOptions" style="display:none;">
+
+                        <h4>More Options:</h4>
+
+                        <label><input type="checkbox" id="compressLevel" checked> High Compression (May be slower)</label>
+
+                        <label><input type="checkbox" id="includeOriginalName" checked> Keep original name in ZIP</label>
+
+                    </div>
+
+
+
+                    <button id="convertBtn" class="tool-button convert-button" disabled>
+
+                        <i class="fas fa-sync-alt spin-icon"></i> Convert to ZIP
+
+                    </button>
+
+
+
+                    <div class="progress-section" id="conversionProgressSection" style="display:none;">
+
+                        <h4>Converting to ZIP...</h4>
+
+                        <div class="progress-bar-container">
+
+                            <div class="progress-bar" id="conversionProgressBar">0%</div>
+
+                        </div>
+
+                        <p id="conversionStatus" class="status-message"></p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="features">
+
+            <div class="container"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+                <h2>Our Tool's <span class="highlight">Key Features</span></h2>
+
+                <div class="features-grid">
+
+                    <div class="feature-item">
+
+                        <i class="fas fa-bolt"></i>
+
+                        <h3>Lightning Fast Conversion</h3>
+
+                        <p>Even your large PDF files will be converted to ZIP in just a few seconds.</p>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fas fa-lock"></i>
+
+                        <h3>Secure & Private</h3>
+
+                        <p>Your files are processed locally in your browser. No uploads to our servers for conversion.</p>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fas fa-cloud-download-alt"></i>
+
+                        <h3>Easy Download</h3>
+
+                        <p>Download your converted ZIP file in one click, hassle-free.</p>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fas fa-thumbs-up"></i>
+
+                        <h3>User-Friendly Interface</h3>
+
+                        <p>The interface is so simple that anyone can use it without any technical knowledge.</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="how-it-works"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+            <div class="container">
+
+                <h2>How <span class="highlight">It Works?</span></h2>
+
+                <div class="steps-container">
+
+                    <div class="step">
+
+                        <div class="step-icon-wrapper"><i class="fas fa-file-arrow-up"></i><span>1</span></div>
+
+                        <h3>Upload File</h3>
+
+                        <p>Select your PDF file or drag & drop it.</p>
+
+                    </div>
+
+                    <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+
+                    <div class="step">
+
+                        <div class="step-icon-wrapper"><i class="fas fa-cogs"></i><span>2</span></div>
+
+                        <h3>Click Convert</h3>
+
+                        <p>Select options (if necessary) and press the "Convert" button.</p>
+
+                    </div>
+
+                    <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+
+                    <div class="step">
+
+                        <div class="step-icon-wrapper"><i class="fas fa-file-zipper"></i><span>3</span></div>
+
+                        <h3>Download ZIP</h3>
+
+                        <p>Once the conversion is complete, the ZIP file will download automatically.</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        
+
+        <section id="seo-info">
+
+            <div class="container"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+                <h2>Why Convert <span class="highlight">PDF to ZIP</span>?</h2>
+
+                <p>PDF (Portable Document Format) files are excellent for sharing documents, but when you need to manage multiple PDF files or reduce their size, converting them to a ZIP archive is a smart approach. ZIP files compress your PDF documents, reducing their overall size. This makes them easier to email, store, or share online.</p>
+
+                <p>Our <strong>PDF to ZIP converter</strong> allows you to do this process in seconds. You just need to upload your PDF file, and our tool will instantly convert it into a compact ZIP file. This is especially useful for those who work with large PDF documents or need to send multiple files at once. Our service is 100% free, secure (client-side processing), and extremely easy to use. </p>
+
+                <h3>Benefits:</h3>
+
+                <ul>
+
+                    <li><i class="fas fa-check-circle"></i> Reduce file size and save storage space.</li>
+
+                    <li><i class="fas fa-check-circle"></i> Organize multiple PDF files into a single, manageable archive.</li>
+
+                    <li><i class="fas fa-check-circle"></i> Make email attachments and online sharing faster and easier.</li>
+
+                    <li><i class="fas fa-check-circle"></i> Protect your documents by archiving them.</li>
+
+                </ul>
+
+                <p>Try our <strong>free PDF to ZIP converter</strong> today and start managing your digital documents more efficiently!</p>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="faq">
+
+            <div class="container"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+                <h2>Frequently Asked <span class="highlight">Questions (FAQ)</span></h2>
+
+                <div class="faq-item">
+
+                    <h4><i class="fas fa-question-circle"></i> Is this tool free to use?</h4>
+
+                    <p>Yes, our PDF to ZIP converter is absolutely free.</p>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <h4><i class="fas fa-question-circle"></i> How long are my files stored on the server?</h4>
+
+                    <p>This tool runs in your browser. For the core PDF to ZIP conversion, your files are not uploaded to any server and remain on your computer.</p>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <h4><i class="fas fa-question-circle"></i> Can I convert large PDF files?</h4>
+
+                    <p>It's best for small to medium-sized files. Very large files (e.g., 100MB+) might slow down your browser or cause errors as the conversion happens in your computer's memory.</p>
+
+                </div>
+
+                 <div class="faq-item">
+
+                    <h4><i class="fas fa-question-circle"></i> Why was the ZIP file showing as damaged previously?</h4>
+
+                    <p>In a previous version, only the file extension was changed. Now, the JSZip library is used to create an actual ZIP file, so this issue is resolved.</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        
+
+        <section id="contact">
+
+            <div class="container"><center><script type="text/javascript">
+	atOptions = {
+		'key' : '19fee4143fbbb58e1390068542b8839b',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/19fee4143fbbb58e1390068542b8839b/invoke.js"></script></center>
+
+                <h2>Contact <span class="highlight">Us</span></h2>
+
+                <p>If you have any questions or suggestions, please let us know.</p>
+
+                <p><a href="mailto:contact@examplepdftozip.com" class="email-link">contact@examplepdftozip.com</a></p>
+
+            </div>
+
+        </section>
+
+
+
+    </main>
+
+
+
+    <footer>
+
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div class="footer-logo">
+
+                    <i class="fas fa-file-zipper logo-icon"></i> PDF<span>to</span>ZIP
+
+                    <p>Fast and easy PDF to ZIP conversion.</p>
+
+                </div>
+
+                <div class="footer-links">
+
+                    <h4>Quick Links</h4>
+
+                    <ul>
+
+                        <li><a href="#converter-tool">Tool</a></li>
+
+                        <li><a href="#features">Features</a></li>
+
+                        <li><a href="https://www.profitableratecpm.com/nn8vm8f02?key=62714402989722e16e99719e2bcd2b40">Privacy Policy</a></li>
+
+                        <li><a href="https://otieu.com/4/8681454">Terms of Service</a></li>
+
+                    </ul>
+
+                </div>
+
+                <div class="footer-social">
+
+                    <h4>Follow Us</h4>
+
+                    <a href="https://www.profitableratecpm.com/nn8vm8f02?key=62714402989722e16e99719e2bcd2b40" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+
+                    <a href="https://otieu.com/4/8681454" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+
+                    <a href="https://www.profitableratecpm.com/nn8vm8f02?key=62714402989722e16e99719e2bcd2b40" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+
+                </div>
+
+            </div>
+
+            <p class="copyright">© <span id="currentYear"></span> PDFtoZIP Converter. All Rights Reserved.</p>
+
+        </div>
+
+    </footer>
+
+
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const pdfFileEl = document.getElementById('pdfFile');
+
+        const browseFileBtn = document.getElementById('browseFileBtn');
+
+        const fileNameDisplay = document.getElementById('fileName');
+
+        const convertBtn = document.getElementById('convertBtn');
+
+        const convertBtnIcon = convertBtn.querySelector('.spin-icon');
+
+
+
+        const uploadProgressSection = document.getElementById('uploadProgressSection');
+
+        const uploadProgressBar = document.getElementById('uploadProgressBar');
+
+        const uploadStatus = document.getElementById('uploadStatus');
+
+
+
+        const conversionProgressSection = document.getElementById('conversionProgressSection');
+
+        const conversionProgressBar = document.getElementById('conversionProgressBar');
+
+        const conversionStatus = document.getElementById('conversionStatus');
+
+
+
+        const conversionOptionsEl = document.getElementById('conversionOptions');
+
+        
+
+        const menuToggle = document.querySelector('.menu-toggle');
+
+        const nav = document.querySelector('header nav');
+
+
+
+        let selectedFile = null;
+
+
+
+        const currentYearEl = document.getElementById('currentYear');
+
+        if (currentYearEl) {
+
+            currentYearEl.textContent = new Date().getFullYear();
+
+        }
+
+        
+
+        if (menuToggle && nav) {
+
+            menuToggle.addEventListener('click', () => {
+
+                nav.classList.toggle('active');
+
+                const icon = menuToggle.querySelector('i');
+
+                icon.classList.toggle('fa-bars');
+
+                icon.classList.toggle('fa-times');
+
+            });
+
+        }
+
+
+
+        if (browseFileBtn && pdfFileEl) {
+
+            browseFileBtn.addEventListener('click', () => {
+
+                pdfFileEl.click();
+
+            });
+
+        }
+
+        
+
+        const uploadArea = document.querySelector('.upload-area');
+
+        if (uploadArea) {
+
+            uploadArea.addEventListener('click', (e) => {
+
+                if (e.target !== browseFileBtn && !browseFileBtn.contains(e.target)) {
+
+                     pdfFileEl.click();
+
+                }
+
+            });
+
+            
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+
+                document.body.addEventListener(eventName, preventDefaults, false); 
+
+            });
+
+
+
+            function preventDefaults(e) {
+
+                e.preventDefault();
+
+                e.stopPropagation();
+
+            }
+
+
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+
+                uploadArea.addEventListener(eventName, () => uploadArea.classList.add('highlight-drag'), false);
+
+            });
+
+
+
+            ['dragleave', 'drop'].forEach(eventName => {
+
+                uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('highlight-drag'), false);
+
+            });
+
+
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+
+
+            function handleDrop(e) {
+
+                let dt = e.dataTransfer;
+
+                let files = dt.files;
+
+                if (files.length > 0) {
+
+                    handleFile(files[0]);
+
+                }
+
+            }
+
+        }
+
+
+
+        if (pdfFileEl) {
+
+            pdfFileEl.addEventListener('change', (event) => {
+
+                if (event.target.files.length > 0) {
+
+                    handleFile(event.target.files[0]);
+
+                }
+
+            });
+
+        }
+
+
+
+        function handleFile(file) {
+
+            resetToolStates(); 
+
+            if (file && file.type === "application/pdf") {
+
+                selectedFile = file;
+
+                fileNameDisplay.textContent = `Selected: ${selectedFile.name}`;
+
+                convertBtn.disabled = true; 
+
+                uploadStatus.textContent = '';
+
+                uploadProgressBar.style.width = '0%';
+
+                uploadProgressBar.textContent = '0%';
+
+                uploadProgressSection.style.display = 'block';
+
+                conversionOptionsEl.style.display = 'none'; 
+
+                conversionProgressSection.style.display = 'none';
+
+                simulateUpload();
+
+            } else {
+
+                selectedFile = null;
+
+                fileNameDisplay.textContent = 'Please select a valid PDF file.';
+
+                convertBtn.disabled = true;
+
+                uploadProgressSection.style.display = 'none';
+
+                conversionOptionsEl.style.display = 'none';
+
+            }
+
+        }
+
+        
+
+        function resetToolStates() {
+
+            uploadStatus.textContent = '';
+
+            uploadStatus.classList.remove('error');
+
+            conversionStatus.textContent = '';
+
+            conversionStatus.classList.remove('error');
+
+            uploadProgressBar.style.backgroundColor = 'var(--primary-color)';
+
+            conversionProgressBar.style.backgroundColor = 'var(--primary-color)';
+
+        }
+
+
+
+
+
+        function simulateUpload() {
+
+            let progress = 0;
+
+            uploadProgressBar.style.backgroundColor = 'var(--primary-color)';
+
+            uploadProgressBar.style.width = '0%';
+
+            uploadProgressBar.textContent = '0%';
+
+            uploadStatus.textContent = '';
+
+            convertBtn.disabled = true; 
+
+
+
+            const interval = setInterval(() => {
+
+                progress += Math.floor(Math.random() * 10) + 5; 
+
+                if (progress > 100) progress = 100;
+
+
+
+                uploadProgressBar.style.width = progress + '%';
+
+                uploadProgressBar.textContent = progress + '%';
+
+
+
+                if (progress === 100) {
+
+                    clearInterval(interval);
+
+                    uploadStatus.textContent = 'PDF uploaded successfully!';
+
+                    uploadStatus.style.color = 'var(--success-color)'; // Use CSS var
+
+                    uploadProgressBar.style.backgroundColor = 'var(--success-color)'; // Use CSS var
+
+                    conversionOptionsEl.style.display = 'block'; 
+
+                    convertBtn.disabled = false; 
+
+                }
+
+            }, 200);
+
+        }
+
+
+
+        if (convertBtn) {
+
+            convertBtn.addEventListener('click', async () => { 
+
+                if (!selectedFile) {
+
+                    alert('Please select a PDF file first!');
+
+                    return;
+
+                }
+
+
+
+                convertBtn.disabled = true;
+
+                if(convertBtnIcon) convertBtnIcon.classList.add('spinning');
+
+                conversionProgressSection.style.display = 'block';
+
+                conversionProgressBar.style.width = '0%';
+
+                conversionProgressBar.textContent = '0%';
+
+                conversionStatus.textContent = 'Starting conversion...';
+
+                conversionStatus.classList.remove('error');
+
+                conversionProgressBar.style.backgroundColor = 'var(--primary-color)';
+
+
+
+                let progress = 0;
+
+                const preZipInterval = setInterval(async () => { 
+
+                    progress += Math.floor(Math.random() * 25) + 10;
+
+                    if (progress > 100) progress = 100;
+
+
+
+                    conversionProgressBar.style.width = progress + '%';
+
+                    conversionProgressBar.textContent = progress + '%';
+
+                    conversionStatus.textContent = 'Processing PDF...';
+
+
+
+                    if (progress === 100) {
+
+                        clearInterval(preZipInterval);
+
+                        conversionStatus.textContent = 'PDF Processed. Now creating ZIP...';
+
+                        await createAndDownloadZip(); 
+
+                    }
+
+                }, 200); 
+
+            });
+
+        }
+
+
+
+        async function createAndDownloadZip() {
+
+            if (!selectedFile) {
+
+                conversionStatus.textContent = 'No file selected for zipping!';
+
+                conversionStatus.style.color = 'var(--error-color)';
+
+                conversionStatus.classList.add('error');
+
+                if(convertBtnIcon) convertBtnIcon.classList.remove('spinning');
+
+                setTimeout(resetToolVisuals, 2000);
+
+                return;
+
+            }
+
+            
+
+            conversionStatus.textContent = 'Compressing and creating ZIP... please wait.';
+
+            conversionStatus.classList.remove('error'); 
+
+            conversionStatus.style.color = 'var(--text-color)'; 
+
+
+
+            try {
+
+                const zip = new JSZip();
+
+                const originalFileName = selectedFile.name;
+
+                
+
+                const includeOriginalNameCheckbox = document.getElementById('includeOriginalName');
+
+                const fileNameInZip = (includeOriginalNameCheckbox && includeOriginalNameCheckbox.checked) 
+
+                                      ? originalFileName 
+
+                                      : `converted_document_${Date.now()}.pdf`; 
+
+
+
+                zip.file(fileNameInZip, selectedFile, { binary: true });
+
+
+
+                const compressLevelCheckbox = document.getElementById('compressLevel');
+
+                const compressionType = (compressLevelCheckbox && compressLevelCheckbox.checked) ? "DEFLATE" : "STORE";
+
+                const compressionLevel = (compressLevelCheckbox && compressLevelCheckbox.checked) ? 9 : 0; // JSZip: 0 (no compression) to 9 (max compression) for DEFLATE
+
+
+
+                const zipBlob = await zip.generateAsync({
+
+                    type: "blob",
+
+                    compression: compressionType,
+
+                    compressionOptions: {
+
+                        level: compressionLevel 
+
+                    },
+
+                    mimeType: "application/zip"
+
+                });
+
+
+
+                conversionProgressBar.style.width = '100%';
+
+                conversionProgressBar.textContent = '100%';
+
+                conversionStatus.textContent = 'ZIP created! Downloading...';
+
+                conversionStatus.style.color = 'var(--success-color)';
+
+                conversionStatus.classList.remove('error');
+
+                conversionProgressBar.style.backgroundColor = 'var(--success-color)';
+
+                if(convertBtnIcon) convertBtnIcon.classList.remove('spinning');
+
+
+
+                const zipFileNameBase = originalFileName.substring(0, originalFileName.lastIndexOf('.')) || originalFileName;
+
+                const finalZipName = `${zipFileNameBase}.zip`;
+
+                
+
+                const url = URL.createObjectURL(zipBlob);
+
+                const a = document.createElement('a');
+
+                a.href = url;
+
+                a.download = finalZipName;
+
+                document.body.appendChild(a);
+
+                a.click();
+
+                document.body.removeChild(a);
+
+                URL.revokeObjectURL(url);
+
+
+
+                console.log(`Successfully downloaded ${finalZipName}`);
+
+                setTimeout(resetToolVisuals, 3000);
+
+
+
+            } catch (error) {
+
+                console.error("Error creating or downloading ZIP:", error);
+
+                conversionStatus.textContent = 'Error creating ZIP! Check console.';
+
+                conversionStatus.style.color = 'var(--error-color)';
+
+                conversionStatus.classList.add('error');
+
+                conversionProgressBar.style.backgroundColor = 'var(--error-color)';
+
+                if(convertBtnIcon) convertBtnIcon.classList.remove('spinning');
+
+                setTimeout(resetToolVisuals, 3000);
+
+            }
+
+        }
+
+        
+
+        function resetToolVisuals() { 
+
+            fileNameDisplay.textContent = selectedFile ? `Selected: ${selectedFile.name}` : ''; 
+
+            
+
+            if (uploadProgressSection) {
+
+                uploadProgressSection.style.display = selectedFile ? 'block' : 'none';
+
+            }
+
+            
+
+            if(conversionOptionsEl) conversionOptionsEl.style.display = selectedFile ? 'block' : 'none';
+
+            
+
+            if(conversionProgressSection) {
+
+                conversionProgressSection.style.display = 'none';
+
+                conversionProgressBar.style.width = '0%';
+
+                conversionProgressBar.textContent = '0%';
+
+                conversionStatus.textContent = '';
+
+                conversionStatus.classList.remove('error');
+
+                conversionProgressBar.style.backgroundColor = 'var(--primary-color)';
+
+            }
+
+            
+
+            if(convertBtn) convertBtn.disabled = !selectedFile; 
+
+            if(convertBtnIcon) convertBtnIcon.classList.remove('spinning');
+
+        }
+
+
+
+
+
+        document.querySelectorAll('header nav a[href^="#"]').forEach(anchor => {
+
+            anchor.addEventListener('click', function (e) {
+
+                e.preventDefault();
+
+                if (nav && nav.classList.contains('active')) { 
+
+                    nav.classList.remove('active');
+
+                    if (menuToggle) {
+
+                        const icon = menuToggle.querySelector('i');
+
+                        if (icon) {
+
+                            icon.classList.remove('fa-times');
+
+                            icon.classList.add('fa-bars');
+
+                        }
+
+                    }
+
+                }
+
+                const targetElement = document.querySelector(this.getAttribute('href'));
+
+                if (targetElement) {
+
+                    targetElement.scrollIntoView({
+
+                        behavior: 'smooth'
+
+                    });
+
+                }
+
+            });
+
+        });
+
+
+
+        const sections = document.querySelectorAll('main section[id]');
+
+        window.addEventListener('scroll', () => {
+
+            let current = '';
+
+            sections.forEach(section => {
+
+                const sectionTop = section.offsetTop;
+
+                if (pageYOffset >= sectionTop - 150) { 
+
+                    current = section.getAttribute('id');
+
+                }
+
+            });
+
+
+
+            document.querySelectorAll('header nav a').forEach(a => {
+
+                a.classList.remove('active');
+
+                if (a.getAttribute('href') && a.getAttribute('href').substring(1) === current) {
+
+                    a.classList.add('active');
+
+                }
+
+            });
+
+        });
+
+
+
+    });
+
+    </script>
+<script async="async" data-cfasync="false" src="//pl26745496.profitableratecpm.com/0cc8ad807da83c66fb45e65c01c5ae73/invoke.js"></script>
+<div id="container-0cc8ad807da83c66fb45e65c01c5ae73"></div>
+</body>
+
+</html>
